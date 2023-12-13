@@ -50,18 +50,27 @@ int main() {
             balls.push_back(ball);
         }
 
-        bool success = true;
+        std::map<std::string, int> minimum = {
+            {"red", 0},
+            {"green", 0},
+            {"blue", 0}
+        };
+
         for(auto b: balls) {
             int num = strtol(b.substr(0, b.find(" ")).c_str(), NULL, 10);
             std::string colour = b.substr(b.find(" ")+1, b.length()-b.find(" ")-1);
-            if(num > MAX_CUBES.at(colour)) {
-                success = false;
+            if(num > minimum.at(colour)) {
+                minimum[colour] = num;
             }
         }
 
-        if (success) {
-            grand_total += (counter + 1);
+        std::map<std::string, int>::iterator it;
+        int cube = 1;
+        for (it = minimum.begin(); it != minimum.end(); it++) {
+            cube *= it->second;
         }
+
+        grand_total += cube;
 
         counter++;
     }
