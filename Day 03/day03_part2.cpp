@@ -38,18 +38,28 @@ int main() {
                 i = last_index - 1;
                 index_num.push_back({counter, first_index, last_index});
 
-            } else if (line[i] != '.') {
+            } else if (line[i] == '*') {
                 index_spc.push_back({counter, i});
             }
         }
         counter++;
 	}
 
-
+    int total = 1;
+    int total_counter = 0;
     for(const auto& current_spc : index_spc) {
+        total = 1;
+        total_counter = 0;
+
         for(const auto& current_num : index_num) {
             if ((std::abs(current_num[0] - current_spc[0]) <= 1) && (current_num[1] - 1 <= current_spc[1]) && (current_spc[1] <= current_num[2])) {
-                grand_total += strtol(line_vec[current_num[0]].substr(current_num[1], current_num[2]-current_num[1]).c_str(), NULL, 10);
+                total *= strtol(line_vec[current_num[0]].substr(current_num[1], current_num[2]-current_num[1]).c_str(), NULL, 10);
+                total_counter++;
+            }
+            
+            if (total_counter == 2) {
+                grand_total += total;
+                break;
             }
         }
     }
