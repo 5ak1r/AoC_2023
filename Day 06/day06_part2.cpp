@@ -4,6 +4,7 @@
 #include <array>
 #include <cmath>
 #include <algorithm>
+#include <sstream>
 
 int main() {
     std::ifstream file("input_day06.txt");
@@ -39,18 +40,28 @@ int main() {
         i++;
     }
 
+    std::stringstream ss_time, ss_distance;
+
+
     for (int i=0; i<RACES; i++) {
-        float disc = pow(time[i], 2) - 4 * distance[i];
-
-        if (disc <= 0) {
-            return 1;
-        }
-
-        float sol_1 = (time[i] + sqrt(disc))/2;
-        float sol_2 = (time[i] - sqrt(disc))/2;
-        grand_total *= floor(sol_1) - ceil(sol_2) + ((sol_1 > sol_2) ? 1: -1); 
-
+        ss_time << time[i];
+        ss_distance << distance[i];
     }
+
+    long l_time = strtol(ss_time.str().c_str(), NULL, 10);
+    long l_distance = strtol(ss_distance.str().c_str(), NULL, 10);
+    
+    float disc = pow(l_time, 2) - 4 * l_distance;
+
+    if (disc <= 0) {
+        return 1;
+    }
+
+    float sol_1 = (l_time + sqrt(disc))/2;
+    float sol_2 = (l_time - sqrt(disc))/2;
+    grand_total *= floor(sol_1) - ceil(sol_2);
+
+    sol_1 > sol_2 ? grand_total++: grand_total--;
 
     std::cout << grand_total << '\n';
 
