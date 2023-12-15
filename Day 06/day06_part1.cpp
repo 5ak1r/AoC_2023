@@ -13,6 +13,8 @@ int main() {
     std::array<int, RACES> time;
     std::array<int, RACES> distance;
 
+    int grand_total = 1;
+
     if (!file.is_open()) {
         std::cerr << "Error opening file" << std::endl;
         return 1;
@@ -38,11 +40,19 @@ int main() {
         i++;
     }
 
-    for (auto ti : time) {
-        std::cout << ti << '\n';
+    for (int i=0; i<RACES; i++) {
+        float disc = pow(time[i], 2) - 4 * distance[i];
+
+        if (disc <= 0) {
+            return 1;
+        }
+
+        float sol_1 = (time[i] + sqrt(disc))/2;
+        float sol_2 = (time[i] - sqrt(disc))/2;
+        grand_total *= floor(sol_1) - ceil(sol_2) + ((sol_1 > sol_2) ? 1: -1); 
+
     }
 
-    for (auto di : distance) {
-        std::cout << di << '\n';
-    }
+    std::cout << grand_total << '\n';
+
 }
