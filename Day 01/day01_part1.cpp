@@ -35,7 +35,4 @@ int main() {
     }
 
     std::cout << grand_total << '\n';
-    file.close();
-
-    return 0;
 }
