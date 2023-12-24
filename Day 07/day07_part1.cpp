@@ -40,8 +40,7 @@ int main() {
         return 1;
     }
 
-    while(file >> hand) {
-        file >> bid;
+    while(file >> hand >> bid) {
         cards.push_back(Cards{hand, bid, calc_kind(hand)});
     }
 
