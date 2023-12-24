@@ -51,6 +51,17 @@
         "xtree": "cpp",
         "array": "cpp",
         "algorithm": "cpp",
-        "optional": "cpp"
-    }
+        "optional": "cpp",
+        "*.tcc": "cpp",
+        "cwctype": "cpp",
+        "deque": "cpp",
+        "unordered_map": "cpp",
+        "functional": "cpp",
+        "memory_resource": "cpp",
+        "numeric": "cpp",
+        "random": "cpp",
+        "string_view": "cpp",
+        "numbers": "cpp"
+    },
+    "C_Cpp.default.compilerPath": "c:\\msys64\\ucrt64\\bin\\c++.exe"
 }
