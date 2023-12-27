@@ -26,7 +26,6 @@ void swap(Cards *a, Cards *b) {
     *b = t;
 }
 
-
 int partition(std::vector<Cards>& cards, int low, int high) {
     Cards pivot = cards[high];
     int i = low - 1;
@@ -79,8 +78,19 @@ int calc_kind(std::string hand) {
         dupes[card] += 1;
     }
 
-    return std::max_element(dupes.begin(), dupes.end(),
+    int kind = std::max_element(dupes.begin(), dupes.end(),
     [](const auto& val1, const auto& val2) { return val1.second < val2.second; })->second;
+
+    //full house
+    if(kind == 3) {
+        for(auto key: dupes) {
+            if(key.second == 2) {
+                return 4;
+            }
+        }
+    }
+
+    return (kind > 3) ? kind + 1: kind;
 }
 
 
@@ -102,6 +112,8 @@ int main() {
     int counter = 1;
     for(auto card: cards) {
         grand_total += card.bid * counter;
+        std::cout << grand_total << '\n';
+        //std::cout << card.hand << " " << card.kind << " " << counter << '\n';
         counter++;
     }
 
