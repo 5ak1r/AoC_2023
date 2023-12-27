@@ -6,7 +6,6 @@
 #include <map>
 #include <algorithm>
 
-int calc_kind(std::string);
 
 //finally using structs sorry about previous solutions
 typedef struct {
@@ -19,6 +18,59 @@ std::vector<Cards> cards;
 
 std::string hand;
 int bid;
+int grand_total = 0;
+
+void swap(Cards *a, Cards *b) {
+    Cards t = *a;
+    *a = *b;
+    *b = t;
+}
+
+
+int partition(std::vector<Cards>& cards, int low, int high) {
+    Cards pivot = cards[high];
+    int i = low - 1;
+
+    for(int j = low; j < high; j++) {
+        if (cards[j].kind <= pivot.kind) {
+            i++;
+            swap(&cards[i], &cards[j]);
+        }
+    }
+
+    swap(&cards[i+1], &cards[high]);
+    return (i+1);
+}
+
+void quick_sort(std::vector<Cards>& cards, int low, int high) {
+    if (low < high) {
+        int part = partition(cards, low, high);
+        quick_sort(cards, low, part-1);
+        quick_sort(cards, part+1, high);
+    }
+}
+
+void sort_same(std::vector<Cards>& cards) {
+    std::string priority = "AKQJT98765432";
+
+    int n = cards.size();
+    
+    //why did I think bubble sort would be fun
+    for(int i = 0; i < n-1; i++) {
+        for(int j = 0; j < n-i-1; j++) {
+            for(int k = 0; k < 4; k++) {
+                if(cards[j].kind == cards[j+1].kind) {
+                    if (priority.find(cards[j].hand[k]) < priority.find(cards[j+1].hand[k])) {
+                        swap(&cards[j], &cards[j+1]);
+                        break;
+                    } else if(priority.find(cards[j].hand[k]) > priority.find(cards[j+1].hand[k])) {
+                        break;
+                    }
+                }
+            }
+        }
+    }
+}
 
 int calc_kind(std::string hand) {
     std::map<char, int> dupes;
@@ -44,7 +96,14 @@ int main() {
         cards.push_back(Cards{hand, bid, calc_kind(hand)});
     }
 
-    for (auto card: cards) {
-        std::cout << card.bid << " " << card.hand << " " << card.kind << '\n';
+    quick_sort(cards, 0, cards.size()-1);
+    sort_same(cards);
+
+    int counter = 1;
+    for(auto card: cards) {
+        grand_total += card.bid * counter;
+        counter++;
     }
+
+    std::cout << grand_total << '\n';
 }
