@@ -57,7 +57,7 @@ void sort_same(std::vector<Cards>& cards) {
     //why did I think bubble sort would be fun
     for(int i = 0; i < n-1; i++) {
         for(int j = 0; j < n-i-1; j++) {
-            for(int k = 0; k < 4; k++) {
+            for(int k = 0; k < 5; k++) {
                 if(cards[j].kind == cards[j+1].kind) {
                     if (priority.find(cards[j].hand[k]) < priority.find(cards[j+1].hand[k])) {
                         swap(&cards[j], &cards[j+1]);
@@ -81,16 +81,32 @@ int calc_kind(std::string hand) {
     int kind = std::max_element(dupes.begin(), dupes.end(),
     [](const auto& val1, const auto& val2) { return val1.second < val2.second; })->second;
 
+    //two pair
+    if (kind == 2) {
+        int twos = 0;
+        for(auto key: dupes) {
+            if(key.second == 2) {
+                twos++;
+            }
+        }
+
+        if(twos == 2) {
+            return 3;
+        }
+        return 2;
+    }
+
     //full house
     if(kind == 3) {
         for(auto key: dupes) {
             if(key.second == 2) {
-                return 4;
+                return 5;
             }
         }
+        return 4;
     }
 
-    return (kind > 3) ? kind + 1: kind;
+    return kind > 3 ? kind + 2: kind;
 }
 
 
@@ -112,8 +128,8 @@ int main() {
     int counter = 1;
     for(auto card: cards) {
         grand_total += card.bid * counter;
-        std::cout << grand_total << '\n';
-        //std::cout << card.hand << " " << card.kind << " " << counter << '\n';
+        //std::cout << grand_total << '\n';
+        std::cout << card.hand << " " << card.kind << " " << counter << '\n';
         counter++;
     }
 
