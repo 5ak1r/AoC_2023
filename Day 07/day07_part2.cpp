@@ -74,25 +74,27 @@ void sort_same(std::vector<Cards>& cards) {
 
 int calc_kind(std::string hand) {
     std::map<char, int> dupes;
-    int jokers;
+    int jokers = 0;
 
     for(auto card: hand) {
-        if (card == 'J') {
+        if(card == 'J') {
             jokers++;
         } else {
-            dupes[card] += 1;
+            dupes[card]++;
         }
     }
 
 
     int kind = std::max_element(dupes.begin(), dupes.end(),
-    [](const auto& val1, const auto& val2) { return val1.second < val2.second; })->second;
+    [](const auto& val1, const auto& val2) { return (val1.second < val2.second); })->second;
+
+    kind += jokers;
 
     //two pair
     if (kind == 2) {
         int twos = 0;
         for(auto key: dupes) {
-            if(key.second == 2 && key.first != 'J') {
+            if(key.second == 2) {
                 twos++;
             }
         }
@@ -107,7 +109,12 @@ int calc_kind(std::string hand) {
     if(kind == 3) {
         for(auto key: dupes) {
             if(key.second == 2) {
-                return 5;
+                //if a joker makes the triple, must ignore the first pair seen, else "AAJ" will be considered a full house (AAJ and then AA)
+                if(jokers != 1) {
+                    return 5;
+                } else {
+                    jokers = -1;
+                }
             }
         }
         return 4;
@@ -135,8 +142,6 @@ int main() {
     int counter = 1;
     for(auto card: cards) {
         grand_total += card.bid * counter;
-        //std::cout << grand_total << '\n';
-        std::cout << card.hand << " " << card.kind << " " << counter << '\n';
         counter++;
     }
 
