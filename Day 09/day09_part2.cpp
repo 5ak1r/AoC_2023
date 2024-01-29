@@ -24,9 +24,9 @@ static std::vector<int> diff(const std::vector<int> &sq) {
 } 
 
 
-static int next_diff(std::vector<int> sq) {
+static int prev_diff(std::vector<int> sq) {
     std::vector<int> diffs = diff(sq);
-    return (all_zero(diffs)) ? sq.back() + diffs.back() : sq.back() + next_diff(diffs);
+    return (all_zero(diffs)) ? sq.front() - diffs.front() : sq.front() - prev_diff(diffs);
 
 }
 
@@ -45,7 +45,7 @@ int main() {
         std::istringstream iss(line);
         std::vector<int> sq(std::istream_iterator<int>(iss), {});
         
-        total += next_diff(sq);
+        total += prev_diff(sq);
 
     }
     
