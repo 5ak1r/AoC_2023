@@ -1,3 +1,4 @@
+#include <cstddef>
 #include <iostream>
 #include <string>
 #include <map>
@@ -20,10 +21,14 @@ static const std::map<char, std::string> PIPES = {
     {'7', "SW"},
 };
 
+typedef struct {
+    size_t row;
+    size_t col;
+} Pos;
 
 int main() {
-    std::ifstream file("input_day09.txt");
-    std::vector<std::vector<char>> pipes;
+    std::ifstream file("input_day10.txt");
+    std::vector<std::string> pipes;
 
     if (!file.is_open()) {
         perror(NULL);
@@ -32,8 +37,8 @@ int main() {
 
     int counter = 0;
     for(std::string line; std::getline(file, line);) {
-        char p;
-        file >> p;
-        pipes[counter].push_back(p);
+        pipes.push_back(line);
     }
+
+    
 }
