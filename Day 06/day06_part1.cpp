@@ -3,7 +3,6 @@
 #include <fstream>
 #include <array>
 #include <cmath>
-#include <algorithm>
 
 int main() {
     std::ifstream file("input_day06.txt");

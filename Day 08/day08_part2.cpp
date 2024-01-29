@@ -5,7 +5,6 @@
 #include <map>
 #include <algorithm>
 #include <regex>
-#include <numeric>
 #include <cmath>
 
 typedef struct {

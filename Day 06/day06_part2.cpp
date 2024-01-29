@@ -3,7 +3,6 @@
 #include <fstream>
 #include <array>
 #include <cmath>
-#include <algorithm>
 #include <sstream>
 
 int main() {
