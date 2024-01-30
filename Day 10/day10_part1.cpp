@@ -38,7 +38,12 @@ int main() {
     int counter = 0;
     for(std::string line; std::getline(file, line);) {
         pipes.push_back(line);
+        counter++;
     }
 
+    const int width = sizeof(pipes);
+    const int height = counter;
+
+    std::cout <<  sizeof(pipes) << " " << sizeof(pipes[0]) << " " << height << '\n';
     
 }
