@@ -26,6 +26,20 @@ typedef struct {
     size_t col;
 } Pos;
 
+Pos find_start(std::vector<std::string> pipes) {
+    size_t counter = 0;
+
+    for(auto row: pipes) {
+        if(row.find('S') != std::string::npos) {
+            return Pos{row.find('S'), counter};
+        }
+        counter++;
+    }
+
+    return Pos{0,0};
+}
+
+
 int main() {
     std::ifstream file("input_day10.txt");
     std::vector<std::string> pipes;
@@ -41,9 +55,9 @@ int main() {
         counter++;
     }
 
-    const int width = sizeof(pipes);
-    const int height = counter;
-
-    std::cout <<  sizeof(pipes) << " " << sizeof(pipes[0]) << " " << height << '\n';
+    Pos start = find_start(pipes);
+    std::cout << start.col << " " << start.row << '\n';
+    
+    
     
 }
