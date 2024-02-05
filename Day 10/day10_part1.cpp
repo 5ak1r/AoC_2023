@@ -33,7 +33,7 @@ Pos find_start(std::vector<std::string> pipes) {
 
     for(auto row: pipes) {
         if(row.find('S') != std::string::npos) {
-            return Pos{row.find('S'), counter};
+            return Pos{counter, row.find('S')};
         }
         counter++;
     }
@@ -44,37 +44,29 @@ Pos find_start(std::vector<std::string> pipes) {
 int traverse(Pos pos, DIRS dir) {
     char current_pipe = pipes[pos.row][pos.col];
 
-    if (current_pipe == 'S') {
-        return 0;
-    }
-
     switch(dir) {
         case W: 
-            pos.row -= 1;
-            break;
-        case N:
-            pos.col += 1;
-            break;
-        case E:
-            pos.row += 1;
-            break;
-        case S:
             pos.col -= 1;
             break;
+        case N:
+            pos.row -= 1;
+            break;
+        case E:
+            pos.col += 1;
+            break;
+        case S:
+            pos.row += 1;
+            break;
     }
 
-    if (pos.row < 0 || pos.row > std::strlen(pipes[0].c_str()) ||
-        pos.col < 0 || pos.col > sizeof(pipes)) {
-        
-        return -INT_MAX;
-
-    } else {
-        switch(current_pipe) {
-            case 'L':
-                
-        }
-    }
+    
 }
+            
+
+
+   
+
+        
 
 
 int main() {
@@ -92,11 +84,13 @@ int main() {
     }
 
     Pos start = find_start(pipes);
+
+    std::cout << start.row << " " << start.col << '\n';
+
     int left = traverse(start, W);
     int up = traverse(start, N);
     int right = traverse(start, E);
     int down = traverse(start, S);
     
-    
-    
+    std::cout << left << " " << up << " " << right << " " << down << '\n';    
 }
