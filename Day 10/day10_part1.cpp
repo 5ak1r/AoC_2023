@@ -1,3 +1,4 @@
+#include <climits>
 #include <cstddef>
 #include <iostream>
 #include <string>
@@ -12,7 +13,14 @@ enum DIRS {
     S,
 };
 
-static const std::map<char, std::string> PIPES = {
+static std::map<DIRS, std::string> OPP = {
+    {N, "S"},
+    {E, "W"},
+    {S, "N"},
+    {W, "E"},
+};
+
+static std::map<char, std::string> PIPES = {
     {'L', "NE"},
     {'|', "NS"},
     {'J', "NW"},
@@ -45,9 +53,6 @@ int traverse(Pos pos, DIRS dir) {
     char current_pipe = pipes[pos.row][pos.col];
 
     switch(dir) {
-        case W: 
-            pos.col -= 1;
-            break;
         case N:
             pos.row -= 1;
             break;
@@ -57,8 +62,19 @@ int traverse(Pos pos, DIRS dir) {
         case S:
             pos.row += 1;
             break;
+        case W: 
+            pos.col -= 1;
+            break;
     }
 
+    //one liner embedded ternaries hehe haha
+    //std::string("S.").find(pipes[pos.row][pos.col]) != std::string::npos ? pipes[pos.row][pos.col] == 'S' ? 1: -INT_MAX: NULL;
+    
+    if(std::string("S.").find(pipes[pos.row][pos.col]) != std::string::npos) {
+        return pipes[pos.row][pos.col] == 'S' ? 1: -INT_MAX;
+    }
+
+    return (OPP[dir].find(PIPES[pipes[pos.row][pos.col]]) != std::string::npos) ? 1 + traverse(pos, /*WORK THIS OUT PLEASE*/): -INT_MAX;
     
 }
             
