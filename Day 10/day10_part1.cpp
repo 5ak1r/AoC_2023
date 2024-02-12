@@ -1,5 +1,3 @@
-#include <climits>
-#include <cstddef>
 #include <fstream>
 #include <iostream>
 #include <map>
@@ -41,31 +39,20 @@ Pos find_start(std::vector<std::string> pipes) {
 int traverse(Pos pos, char dir) {
   int counter = 1;
 
-  switch (dir) {
-    case 'N':
-        pos.row -= 1;
-        break;
-    case 'E':
-        pos.col += 1;
-        break;
-    case 'S':
-        pos.row += 1;
-        break;
-    case 'W':
-        pos.col -= 1;
-        break;
-    }
-
   while(pipes[pos.row][pos.col] != 'S'){
 
     if (pipes[pos.row][pos.col] == '.' ||
         pos.col < 0 || pos.col > pipes.size() - 1 || pos.row < 0 ||
         pos.row > pipes[0].size() - 1) {
-            return 0;
+          return -1;
         }
     
     dir = OPP[char(std::stoi(std::to_string(PIPES[pipes[pos.row][pos.col]][1 - PIPES[pipes[pos.row][pos.col]].find(dir)])))];
     counter++;
+
+    if(PIPES[pipes[pos.row][pos.col]].find(OPP[dir]) == std::string::npos) {
+      return -1;
+    }
 
     switch (dir) {
     case 'N':
@@ -82,15 +69,17 @@ int traverse(Pos pos, char dir) {
         break;
     }
 
+
+
     // one liner embedded ternaries hehe haha
     // std::string("S.").find(pipes[pos.row][pos.col]) != std::string::npos ?
-    // pipes[pos.row][pos.col] == 'S' ? 1: -INT_MAX: NULL;
+    // pipes[pos.row][pos.col] == 'S' ? 1: -999999: NULL;
 
     /*recursion causes stack overflow :(
     if (std::string("S.").find(pipes[pos.row][pos.col]) != std::string::npos ||
         pos.col < 0 || pos.col > pipes.size() - 1 || pos.row < 0 ||
         pos.row > pipes[0].size() - 1) {
-        return pipes[pos.row][pos.col] == 'S' ? counter + 1 : -INT_MAX;
+        return pipes[pos.row][pos.col] == 'S' ? counter + 1 : -999999;
     }
 
 
@@ -98,7 +87,7 @@ int traverse(Pos pos, char dir) {
     return (PIPES[pipes[pos.row][pos.col]].find(dir) !=
             std::string::npos)
                 ? 1 + traverse(pos, OPP[char(std::stoi(std::to_string(PIPES[pipes[pos.row][pos.col]][1 - PIPES[pipes[pos.row][pos.col]].find(dir)])))])
-                : -INT_MAX;
+                : -999999;
                 */
   }
 
@@ -123,14 +112,14 @@ int main() {
 
   Pos start = find_start(pipes);
 
-  int left = traverse(start, 'W');
-  int up = traverse(start, 'N');
-  int right = traverse(start, 'E');
-  int down = traverse(start, 'S');
 
-  std::cout << "left: " << left << std::endl;
-  std::cout << "up: " << up << std::endl;
-  std::cout << "down: " << down << std::endl;
-  std::cout << "right: " << right << std::endl;
+  int left = traverse(Pos{start.row, start.col - 1}, 'W');
+  std::cout << "left: " << left/2 << std::endl;
+  int up = traverse(Pos{start.row - 1, start.col}, 'N');
+  std::cout << "up: " << up/2 << std::endl;
+  int right = traverse(Pos{start.row, start.col + 1}, 'E');
+  std::cout << "right: " << right/2 << std::endl;
+  int down = traverse(Pos{start.row + 1, start.col}, 'S');
+  std::cout << "down: " << down/2 << std::endl;
 
 }
