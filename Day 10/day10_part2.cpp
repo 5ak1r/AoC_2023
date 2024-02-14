@@ -4,6 +4,7 @@
 #include <map>
 #include <string>
 #include <vector>
+#include <algorithm>
 
 static std::map<char, char> OPP = {
     {'N', 'S'},
@@ -80,7 +81,7 @@ std::vector<Pos> traverse(Pos pos, char dir) {
 
 }
 
-int shoelace(std::vector<Pos> corners) {
+/*int shoelace(std::vector<Pos> corners) {
     int answer = 0;
 
     if(corners.size() == 0) {
@@ -93,6 +94,27 @@ int shoelace(std::vector<Pos> corners) {
 
     answer += (corners[corners.size() - 1].col * corners[0].row) - (corners[0].col * corners[corners.size() - 1].row);
     return answer;
+}*/
+
+
+int inside(std::vector<Pos> corners) {
+  std::map<int, std::vector<int>> row_col;
+  int answer = 0;
+
+  for(auto corner: corners) {
+    row_col[corner.row].push_back(corner.col);
+  }
+
+  for(std::map<int, std::vector<int>>::iterator it = row_col.begin(); it != row_col.end(); ++it) {
+    std::sort(it->second.begin(), it->second.end());
+    int counter = 0;
+    for(int i = 0; i < row_col[it->first].size() - 1; i++) {
+      if(counter % 2 == 0) answer += row_col[it->first][i+1] - row_col[it->first][i] - 1;
+      counter++;
+    }
+  }
+
+  return answer;
 }
 
 
@@ -104,10 +126,8 @@ int main() {
     return 1;
   }
 
-  int counter = 0;
   for (std::string line; std::getline(file, line);) {
     pipes.push_back(line);
-    counter++;
   }
 
   Pos start = find_start(pipes);
@@ -118,6 +138,6 @@ int main() {
   std::vector<Pos> right = traverse(Pos{start.row, start.col + 1}, 'E');
   std::vector<Pos> down = traverse(Pos{start.row + 1, start.col}, 'S');
 
-  std::cout << "left: " << std::abs(shoelace(left)/2) << "\nup: " << std::abs(shoelace(up)/2) << "\nright: " << std::abs(shoelace(right)/2) << "\ndown: " << std::abs(shoelace(down)/2) << std::endl;
+  std::cout << inside(left) << std::endl;
 
 }
