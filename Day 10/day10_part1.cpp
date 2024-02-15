@@ -24,11 +24,11 @@ typedef struct {
 std::vector<std::string> pipes;
 
 Pos find_start(std::vector<std::string> pipes) {
-  size_t counter = 0;
+  int counter = 0;
 
   for (auto row : pipes) {
     if (row.find('S') != std::string::npos) {
-      return Pos{(int)counter, (int)row.find('S')};
+      return Pos{counter, (int)row.find('S')};
     }
     counter++;
   }
@@ -42,8 +42,8 @@ int traverse(Pos pos, char dir) {
   while(pipes[pos.row][pos.col] != 'S'){
 
     if (pipes[pos.row][pos.col] == '.' ||
-        pos.col < 0 || pos.col > pipes.size() - 1 || pos.row < 0 ||
-        pos.row > pipes[0].size() - 1) {
+        pos.col < 0 || pos.col > pipes.size() || pos.row < 0 ||
+        pos.row > pipes[0].size()) {
           return -1;
         }
     
@@ -68,7 +68,6 @@ int traverse(Pos pos, char dir) {
         pos.col -= 1;
         break;
     }
-
 
 
     // one liner embedded ternaries hehe haha
@@ -111,7 +110,6 @@ int main() {
   }
 
   Pos start = find_start(pipes);
-
 
   int left = traverse(Pos{start.row, start.col - 1}, 'W');
   std::cout << "left: " << left/2 << std::endl;

@@ -1,10 +1,8 @@
-#include <cstddef>
 #include <fstream>
 #include <iostream>
 #include <map>
 #include <string>
 #include <vector>
-#include <algorithm>
 
 static std::map<char, char> OPP = {
     {'N', 'S'},
@@ -26,11 +24,11 @@ typedef struct {
 std::vector<std::string> pipes;
 
 Pos find_start(std::vector<std::string> pipes) {
-  size_t counter = 0;
+  int counter = 0;
 
   for (auto row : pipes) {
     if (row.find('S') != std::string::npos) {
-      return Pos{(int)counter, (int)row.find('S')};
+      return Pos{counter, (int)row.find('S')};
     }
     counter++;
   }
@@ -38,25 +36,22 @@ Pos find_start(std::vector<std::string> pipes) {
   return Pos{0, 0};
 }
 
-std::vector<Pos> traverse(Pos pos, char dir) {
-  std::vector<Pos> corners;
+int traverse(Pos pos, char dir) {
+  int counter = 1;
 
   while(pipes[pos.row][pos.col] != 'S'){
 
     if (pipes[pos.row][pos.col] == '.' ||
-        pos.col < 0 || pos.col > pipes.size() - 1 || pos.row < 0 ||
-        pos.row > pipes[0].size() - 1) {
-          return {};
+        pos.col < 0 || pos.col > pipes.size() || pos.row < 0 ||
+        pos.row > pipes[0].size()) {
+          return -1;
         }
     
     dir = OPP[char(std::stoi(std::to_string(PIPES[pipes[pos.row][pos.col]][1 - PIPES[pipes[pos.row][pos.col]].find(dir)])))];
-    
-    if(std::string("LJ7F").find(pipes[pos.row][pos.col]) != std::string::npos) {
-        corners.push_back(pos);
-    }
+    counter++;
 
     if(PIPES[pipes[pos.row][pos.col]].find(OPP[dir]) == std::string::npos) {
-      return {};
+      return -1;
     }
 
     switch (dir) {
@@ -74,49 +69,31 @@ std::vector<Pos> traverse(Pos pos, char dir) {
         break;
     }
 
+
+    // one liner embedded ternaries hehe haha
+    // std::string("S.").find(pipes[pos.row][pos.col]) != std::string::npos ?
+    // pipes[pos.row][pos.col] == 'S' ? 1: -999999: NULL;
+
+    /*recursion causes stack overflow :(
+    if (std::string("S.").find(pipes[pos.row][pos.col]) != std::string::npos ||
+        pos.col < 0 || pos.col > pipes.size() - 1 || pos.row < 0 ||
+        pos.row > pipes[0].size() - 1) {
+        return pipes[pos.row][pos.col] == 'S' ? counter + 1 : -999999;
+    }
+
+
+    
+    return (PIPES[pipes[pos.row][pos.col]].find(dir) !=
+            std::string::npos)
+                ? 1 + traverse(pos, OPP[char(std::stoi(std::to_string(PIPES[pipes[pos.row][pos.col]][1 - PIPES[pipes[pos.row][pos.col]].find(dir)])))])
+                : -999999;
+                */
   }
 
-  return corners;
+  return counter;
 
 
 }
-
-/*int shoelace(std::vector<Pos> corners) {
-    int answer = 0;
-
-    if(corners.size() == 0) {
-        return 0;
-    }
-
-    for(int i = 0; i < corners.size() - 1; i++) {
-        answer += (corners[i].col * corners[i+1].row) - (corners[i+1].col * corners[i].row);
-    }
-
-    answer += (corners[corners.size() - 1].col * corners[0].row) - (corners[0].col * corners[corners.size() - 1].row);
-    return answer;
-}*/
-
-
-int inside(std::vector<Pos> corners) {
-  std::map<int, std::vector<int>> row_col;
-  int answer = 0;
-
-  for(auto corner: corners) {
-    row_col[corner.row].push_back(corner.col);
-  }
-
-  for(std::map<int, std::vector<int>>::iterator it = row_col.begin(); it != row_col.end(); ++it) {
-    std::sort(it->second.begin(), it->second.end());
-    int counter = 0;
-    for(int i = 0; i < row_col[it->first].size() - 1; i++) {
-      if(counter % 2 == 0) answer += row_col[it->first][i+1] - row_col[it->first][i] - 1;
-      counter++;
-    }
-  }
-
-  return answer;
-}
-
 
 int main() {
   std::ifstream file("input_day10.txt");
@@ -126,18 +103,21 @@ int main() {
     return 1;
   }
 
+  int counter = 0;
   for (std::string line; std::getline(file, line);) {
     pipes.push_back(line);
+    counter++;
   }
 
   Pos start = find_start(pipes);
 
-
-  std::vector<Pos> left = traverse(Pos{start.row, start.col - 1}, 'W');
-  std::vector<Pos> up = traverse(Pos{start.row - 1, start.col}, 'N');
-  std::vector<Pos> right = traverse(Pos{start.row, start.col + 1}, 'E');
-  std::vector<Pos> down = traverse(Pos{start.row + 1, start.col}, 'S');
-
-  std::cout << inside(left) << std::endl;
+  int left = traverse(Pos{start.row, start.col - 1}, 'W');
+  std::cout << "left: " << left/2 << std::endl;
+  int up = traverse(Pos{start.row - 1, start.col}, 'N');
+  std::cout << "up: " << up/2 << std::endl;
+  int right = traverse(Pos{start.row, start.col + 1}, 'E');
+  std::cout << "right: " << right/2 << std::endl;
+  int down = traverse(Pos{start.row + 1, start.col}, 'S');
+  std::cout << "down: " << down/2 << std::endl;
 
 }
