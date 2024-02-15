@@ -22,6 +22,8 @@ typedef struct {
 } Pos;
 
 std::vector<std::string> pipes;
+
+//add answer to part 1 here
 const int PART_ONE = 7012;
 
 Pos find_start(std::vector<std::string> pipes) {
@@ -116,7 +118,7 @@ int main() {
 
   Pos start = find_start(pipes);
 
-  //use whichever one is correct for your input
+  //use whichever two are correct for your input
   std::vector<Pos> left = traverse(Pos{start.row, start.col - 1}, 'W');
   std::vector<Pos> up = traverse(Pos{start.row - 1, start.col}, 'N');
   std::vector<Pos> right = traverse(Pos{start.row, start.col + 1}, 'E');
