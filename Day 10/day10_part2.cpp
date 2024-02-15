@@ -22,6 +22,7 @@ typedef struct {
 } Pos;
 
 std::vector<std::string> pipes;
+const int PART_ONE = 7012;
 
 Pos find_start(std::vector<std::string> pipes) {
   int counter = 0;
@@ -36,22 +37,25 @@ Pos find_start(std::vector<std::string> pipes) {
   return Pos{0, 0};
 }
 
-int traverse(Pos pos, char dir) {
-  int counter = 1;
-
+std::vector<Pos> traverse(Pos pos, char dir) {
+  std::vector<Pos> corners;
+  
   while(pipes[pos.row][pos.col] != 'S'){
 
     if (pipes[pos.row][pos.col] == '.' ||
         pos.col < 0 || pos.col > pipes.size() || pos.row < 0 ||
         pos.row > pipes[0].size()) {
-          return -1;
+          return {};
         }
     
     dir = OPP[char(std::stoi(std::to_string(PIPES[pipes[pos.row][pos.col]][1 - PIPES[pipes[pos.row][pos.col]].find(dir)])))];
-    counter++;
+    
+    if(std::string("LF7J").find(pipes[pos.row][pos.col]) != std::string::npos) {
+      corners.push_back(pos);
+    }
 
     if(PIPES[pipes[pos.row][pos.col]].find(OPP[dir]) == std::string::npos) {
-      return -1;
+      return {};
     }
 
     switch (dir) {
@@ -68,31 +72,32 @@ int traverse(Pos pos, char dir) {
         pos.col -= 1;
         break;
     }
-
-
-    // one liner embedded ternaries hehe haha
-    // std::string("S.").find(pipes[pos.row][pos.col]) != std::string::npos ?
-    // pipes[pos.row][pos.col] == 'S' ? 1: -999999: NULL;
-
-    /*recursion causes stack overflow :(
-    if (std::string("S.").find(pipes[pos.row][pos.col]) != std::string::npos ||
-        pos.col < 0 || pos.col > pipes.size() - 1 || pos.row < 0 ||
-        pos.row > pipes[0].size() - 1) {
-        return pipes[pos.row][pos.col] == 'S' ? counter + 1 : -999999;
-    }
-
-
-    
-    return (PIPES[pipes[pos.row][pos.col]].find(dir) !=
-            std::string::npos)
-                ? 1 + traverse(pos, OPP[char(std::stoi(std::to_string(PIPES[pipes[pos.row][pos.col]][1 - PIPES[pipes[pos.row][pos.col]].find(dir)])))])
-                : -999999;
-                */
   }
 
-  return counter;
+  return corners;
 
 
+}
+
+int shoelace(std::vector<Pos> corners) {
+    int answer = 0;
+
+    if(corners.size() == 0) {
+        return 0;
+    }
+
+    for(int i = 0; i < corners.size() - 1; i++) {
+        answer += (corners[i].col * corners[i+1].row) - (corners[i+1].col * corners[i].row);
+    }
+
+    answer += (corners.back().col * corners[0].row) - (corners[0].col * corners.back().row);
+    return std::abs(answer)/2;
+}
+
+int picks(int shoelace, int partone) {
+  //A = I + B/2 - 1
+  //A - B/2 + 1 = I
+  return shoelace - partone + 1;
 }
 
 int main() {
@@ -111,13 +116,20 @@ int main() {
 
   Pos start = find_start(pipes);
 
-  int left = traverse(Pos{start.row, start.col - 1}, 'W');
-  std::cout << "left: " << left/2 << std::endl;
-  int up = traverse(Pos{start.row - 1, start.col}, 'N');
-  std::cout << "up: " << up/2 << std::endl;
-  int right = traverse(Pos{start.row, start.col + 1}, 'E');
-  std::cout << "right: " << right/2 << std::endl;
-  int down = traverse(Pos{start.row + 1, start.col}, 'S');
-  std::cout << "down: " << down/2 << std::endl;
+  //use whichever one is correct for your input
+  std::vector<Pos> left = traverse(Pos{start.row, start.col - 1}, 'W');
+  std::vector<Pos> up = traverse(Pos{start.row - 1, start.col}, 'N');
+  std::vector<Pos> right = traverse(Pos{start.row, start.col + 1}, 'E');
+  std::vector<Pos> down = traverse(Pos{start.row + 1, start.col}, 'S');
+
+  //if S is a vertex
+  /*if((left.size() != 0 && right.size() == 0) || (up.size() != 0 && down.size() == 0)) {
+    corners.push_back(start);
+  }*/
+
+  //use whichever one is correct for your input
+  //add this if start is a corner vertex (check values, if L and R both non zero or U and D both nonzero, then S is not a vertex)
+  //right.push_back(start);
+  std::cout << picks(shoelace(left), PART_ONE) << std::endl; // IT FINALLY WORKED!!
 
 }
