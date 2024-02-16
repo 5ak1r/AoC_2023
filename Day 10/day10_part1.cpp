@@ -45,7 +45,7 @@ int traverse(Pos pos, char dir) {
         pos.col < 0 || pos.col > pipes.size() || pos.row < 0 ||
         pos.row > pipes[0].size()) {
           return -1;
-        }
+    }
     
     dir = OPP[char(std::stoi(std::to_string(PIPES[pipes[pos.row][pos.col]][1 - PIPES[pipes[pos.row][pos.col]].find(dir)])))];
     counter++;
