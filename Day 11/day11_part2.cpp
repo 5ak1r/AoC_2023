@@ -10,7 +10,7 @@ typedef struct {
   int col;
 } Planet;
 
-int solution(std::vector<std::string> space) {
+size_t solution(std::vector<std::string> space) {
   int max_rows = space.size();
   int max_cols = space[0].size();
 
@@ -29,7 +29,7 @@ int solution(std::vector<std::string> space) {
     }
   }
 
-  int total_distance = 0;
+  size_t total_distance = 0;
   int manhattan_distance = 0;
   int difference = 0;
 
@@ -45,13 +45,11 @@ int solution(std::vector<std::string> space) {
         }
       }
 
-
       total_distance += manhattan_distance;
 
       if(manhattan_distance != 0) {
-        total_distance += (manhattan_distance - 1 - difference);
+        total_distance += (manhattan_distance - 1 - difference)*999999;
       }
-
 
       manhattan_distance = std::abs(planets[j].col - planets[i].col);
       difference = 0;
@@ -65,10 +63,8 @@ int solution(std::vector<std::string> space) {
       total_distance += manhattan_distance;
 
       if(manhattan_distance != 0) {
-        total_distance += (manhattan_distance - 1 - difference);
+        total_distance += (manhattan_distance - 1 - difference)*999999;
       }
-
-
     }
   }
 
@@ -79,7 +75,7 @@ int solution(std::vector<std::string> space) {
 int main() {
   std::ifstream file("input_day11.txt");
   std::vector<std::string> space;
-  int answer;
+  size_t answer;
 
   if (!file.is_open()) {
     perror(NULL);
