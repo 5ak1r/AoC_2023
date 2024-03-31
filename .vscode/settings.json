@@ -67,7 +67,9 @@
         "xlocbuf": "cpp",
         "xlocmes": "cpp",
         "xlocmon": "cpp",
-        "xloctime": "cpp"
+        "xloctime": "cpp",
+        "bitset": "cpp",
+        "set": "cpp"
     },
     "C_Cpp.default.compilerPath": "c:\\msys64\\ucrt64\\bin\\c++.exe"
 }
