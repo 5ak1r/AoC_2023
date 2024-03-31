@@ -9,7 +9,7 @@
 
 struct memoPipes {
   std::string pipes;
-  std::vector<int> groups;
+  std::vector<size_t> groups;
 
   bool operator<(const memoPipes& other) const {
     if (pipes != other.pipes) {
@@ -25,9 +25,9 @@ struct memoPipes {
 
 };
 
-std::map<memoPipes, int> memo;
+std::map<memoPipes, size_t> memo;
 
-int count_recur(std::string pipes, std::vector<int> groups) {
+size_t count_recur(std::string pipes, std::vector<size_t> groups) {
   
   //create struct for memoisation; not needed to be used throughout
   memoPipes memoise = memoPipes{pipes, groups};
@@ -42,7 +42,7 @@ int count_recur(std::string pipes, std::vector<int> groups) {
     return groups.empty() ? 1 : 0;
   }
   
-  int count = 0;
+  size_t count = 0;
   if(pipes[0] == '.') {
     //ignore undamaged pipe at front
     count = count_recur(pipes.substr(1), groups);
@@ -54,13 +54,13 @@ int count_recur(std::string pipes, std::vector<int> groups) {
       //fail; no groups left but there are still damaged pipes
       count = 0;
     } else {
-      int group = groups[0];
+      size_t group = groups[0];
       //size of group is greater than remaining pipes or the next group pipes are not all # or ?; fail
       if(group > pipes.size() || pipes.substr(0, group).find('.') != std::string::npos) {
         count = 0;
       } else {
         //remove the group of damaged pipes we just looked at
-        std::vector<int> next_groups(groups.begin() + 1, groups.end());
+        std::vector<size_t> next_groups(groups.begin() + 1, groups.end());
         
         if(group == pipes.size()) {
           count = next_groups.empty() ? 1 : 0;
@@ -92,12 +92,17 @@ int main() {
   std::string line;
   std::string pipes;
 
-  std::vector<int> groups;
+  std::vector<size_t> groups;
 
-  int total = 0;
+  std::vector<size_t> five_groups;
+  std::string five_pipes;
+
+  size_t total = 0;
 
   while(std::getline(file, line)) {
     groups.clear();
+    five_groups.clear();
+    five_pipes.clear();
     pipes = line.substr(0, line.find(" "));
     line = line.substr(line.find(" ") + 1);
 
@@ -108,7 +113,19 @@ int main() {
     
     groups.push_back(std::stoi(line));
 
-    total += count_recur(pipes, groups);
+
+    for(int i = 0; i < 5; i++) {
+        for(auto g: groups) {
+            five_groups.push_back(g);
+        }
+
+        for(auto p: pipes) {
+            five_pipes += p;
+        }
+        five_pipes += i == 4 ? "" : "?";
+    }
+    
+    total += count_recur(five_pipes, five_groups);
   }
 
   std::cout << total << std::endl;
