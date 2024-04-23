@@ -49,9 +49,6 @@ std::vector<std::string> push(std::vector<std::string> cols) {
     return new_cols;
 }
 
-std::vector<std::string> rotate(std::vector<std::string> cols) {
-}
-
 std::vector<std::string> get_other(std::vector<std::string> arr) {
     std::vector<std::string> other;
 
@@ -70,6 +67,69 @@ std::vector<std::string> get_other(std::vector<std::string> arr) {
     return other;
 }
 
+std::vector<std::string> rotate(std::vector<std::string> rows) {
+    std::vector<std::string> cols;
+
+    //North
+    cols = get_other(rows);
+    cols = push(cols);
+
+    rows = get_other(cols);
+
+    //West
+    rows = push(rows);
+
+    cols = get_other(rows);
+    
+    //South
+    std::vector<std::string> reversed;
+    std::string reversed_str;
+
+    for(auto col: cols) {
+        for(int i = col.size() - 1; i >= 0; i--) {
+            reversed_str += col[i];
+        }
+        reversed.push_back(reversed_str);
+        reversed_str.clear();
+    }
+
+    cols = push(reversed);
+
+    reversed.clear();
+    for(auto col: cols) {
+        for(int i = col.size() - 1; i >= 0; i--) {
+            reversed_str += col[i];
+        }
+        reversed.push_back(reversed_str);
+        reversed_str.clear();
+    }
+
+    rows = get_other(reversed);
+
+    //East
+    reversed.clear();
+    for(auto row: rows) {
+        for(int i = row.size() - 1; i >= 0; i--) {
+            reversed_str += row[i];
+        }
+        reversed.push_back(reversed_str);
+        reversed_str.clear();
+    }
+
+    rows = push(reversed);
+
+    reversed.clear();
+    for(auto row: rows) {
+        for(int i = row.size() - 1; i >= 0; i--) {
+            reversed_str += row[i];
+        }
+        reversed.push_back(reversed_str);
+        reversed_str.clear();
+    }
+
+    return reversed;
+}
+
 int main() {
     std::ifstream file("input_day14.txt");
 
@@ -79,23 +139,23 @@ int main() {
     }
 
     std::string line;
-    std::vector<std::string> cols;
-    std::vector<std::string> pushed_cols;
-
+    std::vector<std::string> rows;
 
     //separate the lines into columns to move the rocks easier
     while(std::getline(file, line)) {
-        cols.push_back(line);
+        rows.push_back(line);
     }
 
-    cols = rotate(cols);
+    for(int i = 0; i < 1000000000; i++) {
+        rows = rotate(rows);
+    }
 
     size_t total = 0;
 
-    for(auto c: cols) {
-        for(int i = 0; i < c.size(); i++) {
-            if(c[i] == 'O') {
-                total += c.size() - i;
+    for(auto r: rows) {
+        for(int i = 0; i < r.size(); i++) {
+            if(r[i] == 'O') {
+                total += r.size() - i;
             }
         }
     }
