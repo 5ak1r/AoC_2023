@@ -2,7 +2,6 @@
 #include <fstream>
 #include <vector>
 #include <algorithm>
-#include <cmath>
 #include <map>
 
 std::vector<std::string> push(std::vector<std::string> cols) {
