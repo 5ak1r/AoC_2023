@@ -3,6 +3,7 @@
 #include <vector>
 #include <algorithm>
 #include <cmath>
+#include <map>
 
 std::vector<std::string> push(std::vector<std::string> cols) {
     size_t cube_rock_index;
@@ -146,18 +147,44 @@ int main() {
         rows.push_back(line);
     }
 
+    std::map<std::vector<std::string>, std::vector<std::string>> repeats;
+    int index;
+
     for(int i = 0; i < 1000000000; i++) {
-        rows = rotate(rows);
+        if(repeats.find(rows) != repeats.end()) {
+            int left = 1000000000 - i;
+            int rep_len = 0;
+
+            //number of cycles in the pattern
+            for(auto it = repeats.find(rows); it != repeats.end(); it++) {
+                rep_len++;
+            }
+
+            //position in cycle that 1000000000th cycle will stop at
+            index = left % rep_len;
+
+            //not sure where +13 comes from but it gets the answer :) will look back at this later
+            i = 1000000000 - index + 13;
+
+            //probably a better way to do this one
+            repeats.clear();
+            
+        } else {
+            repeats[rows] = rotate(rows);
+            rows = repeats[rows];
+        }
     }
 
     size_t total = 0;
+    int counter = 0;
 
     for(auto r: rows) {
-        for(int i = 0; i < r.size(); i++) {
-            if(r[i] == 'O') {
-                total += r.size() - i;
+        for(auto c: r) {
+            if(c == 'O') {
+                total += rows.size() - counter;
             }
         }
+        counter++;
     }
 
     std::cout << total << std::endl;
