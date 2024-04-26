@@ -1,6 +1,7 @@
 #include <iostream>
 #include <fstream>
 #include <vector>
+#include <string>
 
 int main() {
     std::ifstream file("input_day15.txt");

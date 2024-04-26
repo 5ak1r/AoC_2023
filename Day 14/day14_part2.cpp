@@ -3,6 +3,7 @@
 #include <vector>
 #include <algorithm>
 #include <map>
+#include <string>
 
 std::vector<std::string> push(std::vector<std::string> cols) {
     size_t cube_rock_index;
