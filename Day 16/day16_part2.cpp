@@ -3,6 +3,7 @@
 #include <vector>
 #include <set>
 #include <string>
+#include <algorithm>
 
 
 using Pos = std::pair<std::pair<int, int>, char>;
@@ -100,14 +101,37 @@ int main() {
         rows.push_back(line);
     }
 
-    path({{-1,0},'E'});
 
-    //remove duplicate x,y pairs (directions can cause repeats)
+    std::vector<char> options = {'N', 'E', 'S', 'W'};
+    std::vector<int> totals;
     std::set<std::pair<int,int>> fin;
-
-    for(auto p: seen) {
-        fin.insert(p.first);
+    std::set<std::pair<int, int>> check;
+    for(int i = 0; i < rows[0].size(); i++) {
+        if(i == 0 || i == rows[0].size() - 1) {
+            for(int j = 0; j < rows.size(); j++) {
+                check.insert({i, j});
+            }           
+        } else {
+            check.insert({i, 0});
+            check.insert({i, rows.size() - 1});
+        }
     }
 
-    std::cout << fin.size() << std::endl;
+    for(auto p: check) {
+        for(char o: options) {
+            path({{p.first,p.second},o});
+
+            for(auto s: seen) {
+                fin.insert(s.first);
+            }
+
+            totals.push_back(fin.size());
+            seen.clear();
+            fin.clear();
+        }
+    }
+
+    int max = *std::max_element(totals.begin(), totals.end());
+
+    std::cout << max + 1 << std::endl; //current solution does not count first space
 }
